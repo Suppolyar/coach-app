@@ -6,6 +6,7 @@
     </base-card>
   </section>
 </template>
+
 <script>
 import CoachForm from '@/components/coaches/CoachForm.vue';
 
