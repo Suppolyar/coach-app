@@ -6,7 +6,6 @@ export default {
   state() {
     return {
       lastFetch: null,
-      userIsCoach: false,
       coaches: []
     }
   },
