@@ -1,19 +1,29 @@
 <template>
-  <base-card>
-    <form @submit.prevent='submitForm'>
-      <div class='form-control'>
-        <label for='email'>Email</label>
-        <input v-model.trim='email' type='email' name='email' id='email'>
-      </div>
-      <div class='form-control'>
-        <label for='password'>Password</label>
-        <input v-model.trim='password' type='password' name='password' id='password'>
-      </div>
-      <p v-if='!formIsValid' class='errors'>Please enter a valid email and password (must be at least 6 characters long)</p>
-      <base-btn>{{ submitButtonCaption }}</base-btn>
-      <base-btn type='button' mode='flat' @click='switchAuthMode'>{{ switchModeButtonCaption }}</base-btn>
-    </form>
-  </base-card>
+  <div>
+    <base-dialog :show='!!error' title='An error occurred' @close='handleError'>
+      <p>{{error}}</p>
+    </base-dialog>
+    <base-dialog :show='isLoading' fixed>
+      <p>Authenticated...</p>
+      <base-spinner></base-spinner>
+    </base-dialog>
+
+    <base-card>
+      <form @submit.prevent='submitForm'>
+        <div class='form-control'>
+          <label for='email'>Email</label>
+          <input v-model.trim='email' type='email' name='email' id='email'>
+        </div>
+        <div class='form-control'>
+          <label for='password'>Password</label>
+          <input v-model.trim='password' type='password' name='password' id='password'>
+        </div>
+        <p v-if='!formIsValid' class='errors'>Please enter a valid email and password (must be at least 6 characters long)</p>
+        <base-btn>{{ submitButtonCaption }}</base-btn>
+        <base-btn type='button' mode='flat' @click='switchAuthMode'>{{ switchModeButtonCaption }}</base-btn>
+      </form>
+    </base-card>
+  </div>
 </template>
 
 <script>
@@ -23,7 +33,9 @@ export default {
       email: '',
       password: '',
       formIsValid: true,
-      mode: 'login'
+      mode: 'login',
+      isLoading: null,
+      error: null
     };
   },
   computed: {
@@ -43,13 +55,34 @@ export default {
     }
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       this.formIsValid = true
       if (this.email === '' || !this.email.includes('@') || this.password.length < 6) {
         this.formIsValid = false
         return
       }
-      // Send http req
+
+      this.isLoading = true
+
+      const actionPayload = {
+        email: this.email,
+        password: this.password
+      }
+
+      try {
+        if (this.mode === 'login') {
+          await this.$store.dispatch('login', actionPayload)
+        } else {
+          await this.$store.dispatch('signup', actionPayload)
+        }
+        const redirectUrl = '/' + (this.$route.query.redirect || 'coaches')
+        this.$router.replace(redirectUrl)
+      } catch (error) {
+        this.error = error.message || 'Failed to authentication, try later'
+      } finally {
+        this.isLoading = false
+      }
+
     },
     switchAuthMode() {
       if (this.mode === 'login') {
@@ -57,6 +90,9 @@ export default {
       } else {
         this.mode = 'login'
       }
+    },
+    handleError() {
+      this.error = null
     },
   }
 
