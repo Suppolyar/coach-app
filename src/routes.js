@@ -1,12 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import CoachDetail from '@/pages/coaches/CoachDetail.vue';
-import CoachesList from '@/pages/coaches/CoachesList.vue';
-import CoachRegister from '@/pages/coaches/CoachRegister.vue';
-import ContactCoach from '@/pages/requests/ContactCoach.vue';
-import RequestReceive from '@/pages/requests/RequestReceive.vue';
-import UserAuth from '@/pages/auth/UserAuth.vue';
-import NotFound from '@/pages/NotFound.vue';
+
 
 import store from '@/store/index';
 
@@ -14,17 +8,17 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', redirect: '/coaches' },
-    { path: '/coaches', component: CoachesList },
+    { path: '/coaches', component: () => import('@/pages/coaches/CoachesList.vue') },
     {
       path: '/coaches/:id',
-      component: CoachDetail,
+      component: () => import('@/pages/coaches/CoachDetail.vue'),
       props: true,
-      children: [{ path: 'contact', component: ContactCoach }],
+      children: [{ path: 'contact', component: () => import('@/pages/requests/ContactCoach.vue') }],
     },
-    { path: '/register', component: CoachRegister, meta: {requiresAuth: true} },
-    { path: '/requests', component: RequestReceive, meta: {requiresAuth: true} },
-    { path: '/auth', component: UserAuth, meta: {requiresUnauth: true} },
-    { path: '/:notFound(.*)', component: NotFound },
+    { path: '/register', component: () => import('@/pages/coaches/CoachRegister.vue'), meta: {requiresAuth: true} },
+    { path: '/requests', component: () => import('@/pages/requests/RequestReceive.vue'), meta: {requiresAuth: true} },
+    { path: '/auth', component: () => import('@/pages/auth/UserAuth.vue'), meta: {requiresUnauth: true} },
+    { path: '/:notFound(.*)', component: () => import('@/pages/NotFound.vue') },
   ],
 });
 
