@@ -1,16 +1,18 @@
 <template>
-  <form @submit.prevent='submitForm'>
-    <div class='form-control'>
-      <label for='email'>Your Email</label>
-      <input v-model.trim='email' id='email' type='email'>
+  <form @submit.prevent="submitForm">
+    <div class="form-control">
+      <label for="email">Your Email</label>
+      <input v-model.trim="email" id="email" type="email" />
     </div>
-    <div class='form-control'>
-      <label for='message'>Message</label>
-      <textarea v-model.trim='message' id='message' rows='5'></textarea>
+    <div class="form-control">
+      <label for="message">Message</label>
+      <textarea v-model.trim="message" id="message" rows="5"></textarea>
     </div>
 
-    <p v-if='!formIsValid' class='errors'>Please enter a valid email and not-empty message</p>
-    <div class='actions'>
+    <p v-if="!formIsValid" class="errors">
+      Please enter a valid email and not-empty message
+    </p>
+    <div class="actions">
       <base-btn>Send Message</base-btn>
     </div>
   </form>
@@ -22,25 +24,29 @@ export default {
     return {
       email: '',
       message: '',
-      formIsValid: true
-    }
+      formIsValid: true,
+    };
   },
   methods: {
     submitForm() {
-      this.formIsValid = true
-      if (this.email === '' || !this.email.includes('@') || this.message === '') {
-        this.formIsValid = false
-        return
+      this.formIsValid = true;
+      if (
+        this.email === '' ||
+        !this.email.includes('@') ||
+        this.message === ''
+      ) {
+        this.formIsValid = false;
+        return;
       }
       this.$store.dispatch('requests/contactCoach', {
         email: this.email,
         message: this.message,
-        coachId: this.$route.params.id
-      })
-      this.$router.push('/coaches')
-    }
-  }
-}
+        coachId: this.$route.params.id,
+      });
+      this.$router.push('/coaches');
+    },
+  },
+};
 </script>
 
 <style scoped>

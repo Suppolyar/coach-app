@@ -1,8 +1,8 @@
 <template>
   <the-header />
-  <router-view v-slot='slotProps'>
-    <transition name='route' mode='out-in'>
-      <component :is='slotProps.Component'></component>
+  <router-view v-slot="slotProps">
+    <transition name="route" mode="out-in">
+      <component :is="slotProps.Component"></component>
     </transition>
   </router-view>
 </template>
@@ -13,19 +13,19 @@ export default {
   components: { TheHeader },
   computed: {
     didAutoLogout() {
-      return this.$store.getters.didAutoLogout
-    }
+      return this.$store.getters.didAutoLogout;
+    },
   },
   created() {
-    this.$store.dispatch('tryLogin')
+    this.$store.dispatch('tryLogin');
   },
   watch: {
     didAutoLogout(newValue, oldValue) {
       if (newValue && newValue !== oldValue) {
-        this.$router.replace('/auth')
+        this.$router.replace('/auth');
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

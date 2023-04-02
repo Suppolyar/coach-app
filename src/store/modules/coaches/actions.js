@@ -1,41 +1,45 @@
 export default {
   async registerCoach(context, data) {
-    const userId = context.rootGetters.userId
+    const userId = context.rootGetters.userId;
     const coachData = {
       firstName: data.first,
       lastName: data.last,
       description: data.desc,
       hourlyRate: data.rate,
-      areas: data.areas
-    }
+      areas: data.areas,
+    };
 
-    const token = context.rootGetters.token
+    const token = context.rootGetters.token;
 
-    await fetch(`https://vue-http-demo-suppolyar-default-rtdb.firebaseio.com/coaches/${userId}.json?auth=${token}`, {
-      method: 'PUT',
-      body: JSON.stringify(coachData)
-    })
-
+    await fetch(
+      `https://vue-http-demo-suppolyar-default-rtdb.firebaseio.com/coaches/${userId}.json?auth=${token}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(coachData),
+      }
+    );
 
     context.commit('registerCoach', {
       ...coachData,
-      id: userId
-    })
+      id: userId,
+    });
   },
   async loadCoaches(context, payload) {
     if (!payload.forceRefresh && !context.getters.shouldUpdate) {
-      return
+      return;
     }
 
-    const response = await fetch(`https://vue-http-demo-suppolyar-default-rtdb.firebaseio.com/coaches.json`)
-    const responseData = await response.json()
+    const response = await fetch(
+      `https://vue-http-demo-suppolyar-default-rtdb.firebaseio.com/coaches.json`
+    );
+    const responseData = await response.json();
 
     if (!response.ok) {
-      const error = new Error(responseData.message || 'Failed to fetch')
-      throw error
+      const error = new Error(responseData.message || 'Failed to fetch');
+      throw error;
     }
 
-    const coaches = []
+    const coaches = [];
 
     for (const key in responseData) {
       const coach = {
@@ -44,12 +48,12 @@ export default {
         lastName: responseData[key].lastName,
         description: responseData[key].description,
         hourlyRate: responseData[key].hourlyRate,
-        areas: responseData[key].areas
+        areas: responseData[key].areas,
       };
-      coaches.push(coach)
+      coaches.push(coach);
     }
 
-    context.commit('setCoaches', coaches)
-    context.commit('setFetchTimeStamp')
-  }
-}
+    context.commit('setCoaches', coaches);
+    context.commit('setFetchTimeStamp');
+  },
+};

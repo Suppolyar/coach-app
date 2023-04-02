@@ -1,18 +1,23 @@
 <template>
   <div>
-    <base-dialog :show='!!error' title='An error occurred' @close='handleError'>
-      <p>{{error}}</p>
+    <base-dialog :show="!!error" title="An error occurred" @close="handleError">
+      <p>{{ error }}</p>
     </base-dialog>
     <section>
       <base-card>
         <header>
           <h2>Request receive</h2>
         </header>
-        <div v-if='isLoading'>
+        <div v-if="isLoading">
           <base-spinner />
         </div>
-        <ul v-else-if='hasRequests && !isLoading'>
-          <request-item v-for='req in receiveRequests' :key='req.id' :email='req.userEmail' :message='req.message'/>
+        <ul v-else-if="hasRequests && !isLoading">
+          <request-item
+            v-for="req in receiveRequests"
+            :key="req.id"
+            :email="req.userEmail"
+            :message="req.message"
+          />
         </ul>
         <h3 v-else>You haven't received any requests yet!</h3>
       </base-card>
@@ -28,36 +33,36 @@ export default {
   data() {
     return {
       error: null,
-      isLoading: false
-    }
+      isLoading: false,
+    };
   },
   computed: {
     receiveRequests() {
-      return this.$store.getters['requests/requests']
+      return this.$store.getters['requests/requests'];
     },
     hasRequests() {
-      return this.$store.getters['requests/hasRequests']
-    }
+      return this.$store.getters['requests/hasRequests'];
+    },
   },
   created() {
-    this.loadRequests()
+    this.loadRequests();
   },
   methods: {
     async loadRequests() {
-      this.isLoading = true
+      this.isLoading = true;
       try {
-        await this.$store.dispatch('requests/fetchRequest')
+        await this.$store.dispatch('requests/fetchRequest');
       } catch (error) {
-        this.error = error.message || 'Something failed'
+        this.error = error.message || 'Something failed';
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
     },
     handleError() {
-      this.error = null
-    }
-  }
-}
+      this.error = null;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -75,5 +80,4 @@ ul {
 h3 {
   text-align: center;
 }
-
 </style>

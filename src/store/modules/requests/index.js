@@ -1,14 +1,14 @@
-import actions from './actions'
+import actions from './actions';
 import mutations from './mutations';
-import getters from './getters'
+import getters from './getters';
 export default {
   namespaced: true,
   state() {
     return {
-      requests: []
+      requests: [],
     };
   },
   actions,
   mutations,
-  getters
-}
+  getters,
+};
